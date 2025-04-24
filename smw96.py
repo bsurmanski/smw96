@@ -1,3 +1,21 @@
+import argparse
+
+# snippet from an 100% save SRAM.
+# See: https://www.smwcentral.net/?p=memorymap&game=smw&region=sram
+# relevant:
+# 96 bytes overworld level flags
+# 15 bytes overworld event flags (bitwise)
+# 29 bytes irrelevant
+# 1 byte: # events triggered.
+#
+# each level flag is 1 byte: bmesudlr
+# b - level beaten
+# m - midway passed
+# e,s - unused
+# u,d,l,r - can move up down left right
+#
+# each event flag maps to an exit clear, and this is actually
+# what is counted on the save file. each 'event' is a single bit.
 good_save = bytes.fromhex("""
 00 83 83 04 8F 87 89 8A 81 8E 8D 83 83 C3 87 87
 86 8C 04 8D 84 CE 08 00 8A 00 8E 85 89 8A 01 83
@@ -10,6 +28,7 @@ good_save = bytes.fromhex("""
 00 05 00 0A 00 01 01 01 01 00 00 00 60 B2 24 00
 """.replace(" ", "").replace("\n", "").strip())
 
+# Found in Lunar Magic
 levels = [
     'bonus room',       # 0
     'Vanilla Secret 2',
@@ -107,6 +126,38 @@ levels = [
     '', '', '', '', ''
 ]
 
+# Found in Lunar Magic
+events = {
+    0x53: "Star Road (top left)",
+    0x54: "Star World 2",
+    0x56: "Star Road (top)",
+    0x57: "Star World 3",
+    0x59: "Star road (top right)",
+    0x5a: "Star World 4",
+    0x5c: "Star road (bot right)",
+    0x4d: "Star World 5",
+    0x50: "Star road (bot left)",
+    0x51: "Star World 1",
+    0x30: "Forest Ghost House",
+    0x2a: "Forest of Illusion 1",
+    0x32: "Forest of Illusion 4",
+    0x34: "Forest Secret Area",
+    0x2e: "Forest of Illusion 3",
+    0x2c: "Forest of Illusion 2",
+    0x63: "Chocolate Island 1",
+    0x46: "Chocolate Island 2",
+    0x48: "Chocolate Island 3",
+    0x4a: "Chocolate Fortress",
+    0x02: "Yellow Switch",
+    0x28: "Green Switch",
+    0x29: "Red Switch",
+    0x37: "Blue Switch",
+    0x41: "Valley Fortress",
+    0x3b: "Valley Ghost House",
+    0x12: "Donut Secret (Ghost) House",
+    0x0b: "Donut Ghost House",
+}
+
 class LevelSetting:
     def __init__(self, b):
         self.raw = b
@@ -133,18 +184,19 @@ class LevelSetting:
     def __str__(self):
         return f"beaten: {self.beaten == 0x80}, udlr: {bin(self.raw & 0x0f)}"
 
-def main():
-    fname = "Super Mario World (USA).srm"
+def main(fname):
     bad_save = ""
-    print(len(levels))
     with open(fname, 'rb') as file:
         bad_save = file.read()
     print(f"{bad_save[0x8c]} exits found. {96 - bad_save[0x8c]} remaining")
+
+    print("-- missing paths --")
+    printed = False
     for i in range(0, 96):
         gsb = LevelSetting(good_save[i])
         bsb = LevelSetting(bad_save[i])
         level_index = i #- 0xdc if i > 0x24 else i
-        if gsb != bsb:
+        if gsb != bsb: # uses comparator
             out = ""
             if gsb.beaten and not bsb.beaten:
                 out += "unbeaten. "
@@ -161,14 +213,31 @@ def main():
                 if gsb.down and not bsb.down:
                     out += "down"
             print(f"{levels[level_index]}, - {out}")
+            printed = True
         elif good_save[i] != bad_save[i]:
             print(f"{levels[level_index]}, - somethings up {good_save[i] - bad_save[i]}")
-    # events
+    if not printed:
+        print("none")
+    
+    printed = False
+    print("-- missing events --")
     for i in range(0x60, 0x60 + 15):
         if good_save[i] != bad_save[i]:
             for j in range(0,8): # bit
                 if (good_save[i] & 1 << j) != (bad_save[i] & 1 << j):
-                    print(f'event number {(i - 0x60) * 8 + (8-j)}')
+                    event_num = (i - 0x60) * 8 + (8-j)
+                    level_name = ""
+                    if event_num in events:
+                        level_name = events[event_num]
+                    elif event_num - 1 in events: # secret exits are event# + 1
+                        level_name = events[event_num - 1] + " (secret)"
+                    print(f'{level_name}')
+                    printed = True
+    if not printed:
+        print("none - this file is 100%!")
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description="A program to find missing exits in a SMW Save")
+    parser.add_argument("-f", "--filename", help="Save file to check.", default="Super Mario World (USA).srm")
+    args = parser.parse_args()
+    main(args.filename)
