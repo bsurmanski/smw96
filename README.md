@@ -26,7 +26,7 @@ Forest Ghost House (secret)
 
 # Restrictions and Future Work
 
-* This only works with .sav files, not save states.
+* This only works with .srm files, not save states.
 
 The RAM format and SRAM format is the same, so if the correct offset is found in the savestate,
 this tool should work (use the -o option).
