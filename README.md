@@ -22,7 +22,7 @@ For use with save states, you need to know the offset to overworld level flags. 
 
 `python smw96.py -f 'Super Mario World (USA).state98' -o 0x12af0`
 
-# Commandline Options
+## Commandline Options
 
 * -f FILENAME - the filename
 * -s {A,B,C} - the save entry (Mario A, Mario B, Mario C) to check
