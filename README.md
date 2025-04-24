@@ -18,11 +18,13 @@ none
 Forest Ghost House (secret)
 ```
 
+# Commandline Options
+
+* -f FILENAME - the filename
+* -s {A,B,C} - the save entry (Mario A, Mario B, Mario C) to check
+* -o OFFSET - arbitrary byte offset in the file where the save structure is (usable for savestates?)
+
 # Restrictions and Future Work
-
-* This only works on Mario A files.
-
-The format for Mario B/C is the same, so if the correct offset is found this tool would work for those files too.
 
 * This only works with .sav files, not save states.
 

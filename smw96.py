@@ -184,10 +184,10 @@ class LevelSetting:
     def __str__(self):
         return f"beaten: {self.beaten == 0x80}, udlr: {bin(self.raw & 0x0f)}"
 
-def main(fname):
+def main(fname, offset=0):
     bad_save = ""
     with open(fname, 'rb') as file:
-        bad_save = file.read()
+        bad_save = file.read()[offset:]
     print(f"{bad_save[0x8c]} exits found. {96 - bad_save[0x8c]} remaining")
 
     print("-- missing paths --")
@@ -220,6 +220,7 @@ def main(fname):
         print("none")
     
     printed = False
+    unknown_events = []
     print("-- missing events --")
     for i in range(0x60, 0x60 + 15):
         if good_save[i] != bad_save[i]:
@@ -231,13 +232,21 @@ def main(fname):
                         level_name = events[event_num]
                     elif event_num - 1 in events: # secret exits are event# + 1
                         level_name = events[event_num - 1] + " (secret)"
+                    else:
+                        unknown_events.append(event_num)
+                        continue
                     print(f'{level_name}')
                     printed = True
+    if unknown_events:
+        print("unknown events: " + ",".join([hex(e) for e in unknown_events]))
     if not printed:
         print("none - this file is 100%!")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="A program to find missing exits in a SMW Save")
     parser.add_argument("-f", "--filename", help="Save file to check.", default="Super Mario World (USA).srm")
+    parser.add_argument("-s", "--savename", help="Mario A, B or C.", choices=["A","B", "C"], default="A")
+    parser.add_argument("-o", "--offset", help="Arbitrary byte offset in savefile. Can be used if you have a savestate and know where the save data is.", type=int, default=0)
     args = parser.parse_args()
-    main(args.filename)
+    save_offset = {"B": 0x8f, "C": 0x11e}.get(args.savename, 0)
+    main(args.filename, args.offset + save_offset)
