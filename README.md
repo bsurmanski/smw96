@@ -30,3 +30,5 @@ Forest Ghost House (secret)
 
 The RAM format and SRAM format is the same, so if the correct offset is found in the savestate,
 this tool should work.
+
+* This tool is poorly tested! There is likely bugs. It's read-only, so nothing harmful should happen but crashes and wrong answers are possible.

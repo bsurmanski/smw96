@@ -238,7 +238,7 @@ def main(fname, offset=0):
                     print(f'{level_name}')
                     printed = True
     if unknown_events:
-        print("unknown events: " + ",".join([hex(e) for e in unknown_events]))
+        print("other events: " + ",".join([hex(e) for e in unknown_events]))
     if not printed:
         print("none - this file is 100%!")
 
