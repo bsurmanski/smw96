@@ -242,11 +242,12 @@ def main(fname, offset=0):
     if not printed:
         print("none - this file is 100%!")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A program to find missing exits in a SMW Save")
+    parser.register("type", "hexint", lambda s: int(s, 16))
     parser.add_argument("-f", "--filename", help="Save file to check.", default="Super Mario World (USA).srm")
     parser.add_argument("-s", "--savename", help="Mario A, B or C.", choices=["A","B", "C"], default="A")
-    parser.add_argument("-o", "--offset", help="Arbitrary byte offset in savefile. Can be used if you have a savestate and know where the save data is.", type=int, default=0)
+    parser.add_argument("-o", "--offset", help="Arbitrary byte offset in savefile (in hex). Can be used if you have a savestate and know where the save data is. 0x12af0 worked for a snes9x save state.", type="hexint", default="0x00")
     args = parser.parse_args()
     save_offset = {"B": 0x8f, "C": 0x11e}.get(args.savename, 0)
     main(args.filename, args.offset + save_offset)
