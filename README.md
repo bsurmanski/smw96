@@ -34,6 +34,8 @@ You may see an output like the following:
 
 `other events: 0x8,0x7,0x6,0x5,0x4,0x10,0xf,0xd,0xa,0x9,0x18,0x17`
 
+This can be ignored.
+
 each event represents a level exit. The levels here should already be represented in the `missing paths` section. I only bothered mapping exit that don't create new paths, and so wouldn't show up in the existing `missing paths` list.
 
 # Restrictions and Future Work
