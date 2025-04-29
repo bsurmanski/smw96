@@ -22,6 +22,11 @@ For use with save states, you need to know the offset to overworld level flags. 
 
 `python smw96.py -f 'Super Mario World (USA).state98' -o 0x12af0`
 
+If that offset doesn't work, you can use a hexedit to search for bytes in the 'good save' (see comment at the top of the code). The first 96 bytes of SRAM
+are level flags that represent if each level is beaten, midpoint passed, and directions you can move on the overworld. If you have beaten and gotten the midpoint 
+on most levels, a subset of bytes in the 'good save' should match somewhere in your save/savestate. Consider trying different substrings; if you're unlucky your
+selection might be missing a midpoint or overworld path.
+
 ## Commandline Options
 
 * -f FILENAME - the filename
