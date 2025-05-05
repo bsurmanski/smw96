@@ -213,8 +213,9 @@ def main(fname, offset=0):
                     out += "down"
             print(f"{levels[level_index]}, - {out}")
             printed = True
-        elif good_save[i] != bad_save[i]:
-            print(f"{levels[level_index]}, - somethings up {good_save[i] - bad_save[i]}")
+        # TODO: enable this in a 'debug' option...
+        # elif good_save[i] != bad_save[i]:
+        #    print(f"{levels[level_index]}, - somethings up {good_save[i] - bad_save[i]}")
     if not printed:
         print("none")
     
