@@ -172,7 +172,6 @@ class LevelSetting:
         if not isinstance(other, LevelSetting):
             return NotImplemented
         return self.beaten == other.beaten and\
-            self.midway == other.midway and\
             self.up == other.up and\
             self.down == other.down and\
             self.left == other.left and\
