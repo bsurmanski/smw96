@@ -102,7 +102,7 @@ levels = [
     'Blue Switch Palace',
     'Forest Secret Area',
     'Forest of Illusion 3',
-    '0x124 - Star Warp',
+    '0x124 - Star Warp (Special Zone)',
     'Funky',
     'Outrageous',
     'Mondo',
