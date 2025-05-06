@@ -226,7 +226,7 @@ def main(fname, offset=0):
         if good_save[i] != bad_save[i]:
             for j in range(0,8): # bit
                 if (good_save[i] & 1 << j) != (bad_save[i] & 1 << j):
-                    event_num = (i - 0x60) * 8 + (8-j)
+                    event_num = (i - 0x60) * 8 + (7-j)
                     level_name = ""
                     if event_num in events:
                         level_name = events[event_num]
