@@ -183,13 +183,13 @@ class LevelSetting:
     def __str__(self):
         return f"beaten: {self.beaten == 0x80}, udlr: {bin(self.raw & 0x0f)}"
 
-def main(fname, offset=0):
+def main(fname, offset=0, verbose=False):
     bad_save = ""
     with open(fname, 'rb') as file:
         bad_save = file.read()[offset:]
     print(f"{bad_save[0x8c]} exits found. {96 - bad_save[0x8c]} remaining")
 
-    print("-- missing paths --")
+    print("-- additional missing paths --")
     printed = False
     for i in range(0, 96):
         gsb = LevelSetting(good_save[i])
@@ -213,9 +213,8 @@ def main(fname, offset=0):
                     out += "down"
             print(f"{levels[level_index]}, - {out}")
             printed = True
-        # TODO: enable this in a 'debug' option...
-        # elif good_save[i] != bad_save[i]:
-        #    print(f"{levels[level_index]}, - somethings up {good_save[i] - bad_save[i]}")
+        elif verbose and good_save[i] != bad_save[i]:
+            print(f"{levels[level_index]}, - bitwise mismatch to good save (likely midway flag): {good_save[i] - bad_save[i]}")
     if not printed:
         print("none")
     
@@ -235,9 +234,11 @@ def main(fname, offset=0):
                     else:
                         unknown_events.append(event_num)
                         continue
+                    if verbose:
+                        level_name += f' [{hex(event_num)}]'
                     print(f'{level_name}')
                     printed = True
-    if unknown_events:
+    if verbose and unknown_events:
         print("other events: " + ",".join([hex(e) for e in unknown_events]))
         printed = True
     if not printed:
@@ -249,6 +250,7 @@ if __name__ == "__main__":
     parser.add_argument("-f", "--filename", help="Save file to check.", default="Super Mario World (USA).srm")
     parser.add_argument("-s", "--savename", help="Mario A, B or C.", choices=["A","B", "C"], default="A")
     parser.add_argument("-o", "--offset", help="Arbitrary byte offset in savefile (in hex). Can be used if you have a savestate and know where the save data is. 0x12af0 worked for a snes9x save state.", type="hexint", default="0x00")
+    parser.add_argument("-v", "--verbose", help="Output extra debug info.", action="store_true")
     args = parser.parse_args()
     save_offset = {"B": 0x8f, "C": 0x11e}.get(args.savename, 0)
-    main(args.filename, args.offset + save_offset)
+    main(args.filename, args.offset + save_offset, args.verbose)

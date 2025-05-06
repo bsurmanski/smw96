@@ -32,6 +32,7 @@ selection might be missing a midpoint or overworld path.
 * -f FILENAME - the filename
 * -s {A,B,C} - the save entry (Mario A, Mario B, Mario C) to check
 * -o OFFSET - arbitrary byte offset (in hex) in the file where the save structure is (usable for savestates)
+* -v - extra debug output
 
 ## Unknown Event 
 
