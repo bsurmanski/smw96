@@ -4,7 +4,7 @@ you need to beat? Then this tool is for you!
 
 # How to Use
 
-This tool uses a savefile (SRAM dump). If using an emulator, this should be a .srm file. (unforunately savestates are unsupported at this time). Provide the save file with the -f flag.
+This tool uses a savefile (SRAM dump). If using an emulator, this should be a .srm file. (savestates are emulator dependent and somewhat unsupported). Provide the save file with the -f flag.
 
 `python smw96.py -f "Super Mario World (USA).srm"`
 
